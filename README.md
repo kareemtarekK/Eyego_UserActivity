@@ -46,6 +46,43 @@ EXPOSE 5000
 # Run the app
 CMD ["node", "src/index.js"]
 
+
+docker-compose
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - kafka
+      - mongo
+    environment:
+      - MONGO_URL=mongodb+srv://engkareemtarek555:PtsnK8MylaOW66sN@activitylogs.ttl0qgw.mongodb.net/?retryWrites=true&w=majority&appName=ActivityLogs
+      - KAFKA_BROKER=kafka:9092
 ### 1. Build Docker Image
 
 ```bash
