@@ -33,6 +33,18 @@ This is a scalable, event-driven microservice built with Node.js, Kafka, MongoDB
 ---
 
 ## 🐳 Docker Instructions
+# Use official Node.js image
+FROM node:18-alpine
+# Set working directory
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install --production
+# Copy source code
+COPY . .
+# Expose the port
+EXPOSE 5000
+# Run the app
+CMD ["node", "src/index.js"]
 
 ### 1. Build Docker Image
 
